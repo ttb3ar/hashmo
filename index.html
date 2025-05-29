@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-language="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hashing Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <button class="theme-switch" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+  <button class="lang-switch" onclick="toggleLanguage()"><i class="fas fa-language"></i></button>
+
+  <div class="container">
+    <header>
+      <h1 id="title">Hashing Demo</h1>
+      <p id="subtitle">Explore MD5, SHA-1, and SHA-256 + file verification</p>
+    </header>
+    <main class="form-class">
+      <div class="input-group">
+        <label for="textInput">Text to Hash:</label>
+        <input type="text" id="textInput" placeholder="Enter text here..." />
+        <div>
+          <button onclick="runHash('MD5')">MD5</button>
+          <button onclick="runHash('SHA-1')">SHA-1</button>
+          <button onclick="runHash('SHA-256')">SHA-256</button>
+        </div>
+      </div>
+
+      <div class="output" id="hashResult"></div>
+
+      <hr />
+
+      <div class="input-group">
+        <label for="fileInput">File for Integrity Check (SHA-256):</label>
+        <input type="file" id="fileInput" />
+        <input type="text" id="expectedHash" placeholder="Expected SHA-256 hash" />
+        <button onclick="verifyFile()">Verify File</button>
+      </div>
+
+      <div class="output" id="fileResult"></div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="social-links">
+      <a href="https://github.com/ttb3ar"><i class="fab fa-github"></i></a>
+      <a href="https://linkedin.com/in/your-profile"><i class="fab fa-linkedin"></i></a>
+    </div>
+    <p id="footer-text">Created by TTB3AR</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
