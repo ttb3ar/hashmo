@@ -129,6 +129,9 @@ function toggleLanguage() {
     
     showLanguageIndicator(newLanguage);
     
+    // Update any visible error messages
+    updateDisplayedMessages();
+    
     setTimeout(() => {
       contentElements.forEach(element => {
         element.classList.remove('fade-out');
@@ -166,6 +169,54 @@ function updateUILanguage(language) {
   document.getElementById('verify-button').textContent = texts.verifyButton;
   document.getElementById('footer-text').textContent = texts.footer;
   document.title = texts.title;
+}
+
+// NEW FUNCTION: Update displayed messages when language changes
+function updateDisplayedMessages() {
+  const hashResult = document.getElementById("hashResult");
+  const fileResult = document.getElementById("fileResult");
+  const texts = translations[isJapanese ? 'jp' : 'en'];
+  
+  // Update hash result if it contains an error message
+  if (hashResult.textContent === translations.en.emptyTextError || 
+      hashResult.textContent === translations.jp.emptyTextError) {
+    hashResult.textContent = texts.emptyTextError;
+  }
+  
+  // Update file result if it contains error messages
+  const fileResultText = fileResult.textContent;
+  if (fileResultText === translations.en.selectFileError || 
+      fileResultText === translations.jp.selectFileError) {
+    fileResult.textContent = texts.selectFileError;
+  } else if (fileResultText === translations.en.enterHashError || 
+             fileResultText === translations.jp.enterHashError) {
+    fileResult.textContent = texts.enterHashError;
+  } else if (fileResultText === translations.en.invalidHashError || 
+             fileResultText === translations.jp.invalidHashError) {
+    fileResult.textContent = texts.invalidHashError;
+  } else if (fileResultText === translations.en.calculatingHash || 
+             fileResultText === translations.jp.calculatingHash) {
+    fileResult.textContent = texts.calculatingHash;
+  } else if (fileResultText.startsWith(translations.en.hashMatch.split(' ')[0]) || 
+             fileResultText.startsWith(translations.jp.hashMatch.split(' ')[0])) {
+    // Handle success messages that include file info
+    const lines = fileResultText.split('\n');
+    if (lines.length >= 3) {
+      fileResult.textContent = `${texts.hashMatch}\n${lines[1]}\n${lines[2]}`;
+    }
+  } else if (fileResultText.startsWith(translations.en.hashMismatch.split(' ')[0]) || 
+             fileResultText.startsWith(translations.jp.hashMismatch.split(' ')[0])) {
+    // Handle mismatch messages that include file info
+    const lines = fileResultText.split('\n');
+    if (lines.length >= 4) {
+      fileResult.textContent = `${texts.hashMismatch}\n${lines[1]}\nExpected: ${lines[2].split(': ')[1]}\nActual: ${lines[3].split(': ')[1]}`;
+    }
+  } else if (fileResultText.startsWith(translations.en.fileError) || 
+             fileResultText.startsWith(translations.jp.fileError)) {
+    // Handle file error messages
+    const errorPart = fileResultText.split(': ').slice(1).join(': ');
+    fileResult.textContent = `${texts.fileError} ${errorPart}`;
+  }
 }
 
 function showLanguageIndicator(language) {
