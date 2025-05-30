@@ -1,41 +1,188 @@
-const translations = {
-  en: { 
-    title: "Hashing Demo", 
-    subtitle: "Explore MD5, SHA-1, and SHA-256 + file verification" 
-  },
-  jp: { 
-    title: "ハッシュデモ", 
-    subtitle: "MD5・SHA-1・SHA-256 とファイル検証" 
-  }
-};
+const themeToggle = document.getElementById("checkbox");
+const langToggle = document.getElementById("language-checkbox");
+const langLabel = document.querySelector(".lang-label");
+const title = document.getElementById("title");
 
 let isJapanese = false;
 
-/**
- * Toggle between light and dark themes
- */
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme');
-  const newTheme = current === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', newTheme);
-  
-  // Update theme icon
-  const themeIcon = document.querySelector('.theme-switch i');
-  themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+// Language translations object
+const translations = {
+  en: {
+    title: "Hashing Demo",
+    subtitle: "Explore MD5, SHA-1, and SHA-256 + file verification",
+    textLabel: "Text to Hash:",
+    textPlaceholder: "Enter text here...",
+    fileLabel: "File for Integrity Check (SHA-256):",
+    expectedHashPlaceholder: "Expected SHA-256 hash",
+    verifyButton: "Verify File",
+    footer: "Created by TTB3AR",
+    emptyTextError: "Please enter some text to hash.",
+    selectFileError: "Please select a file.",
+    enterHashError: "Please enter the expected hash.",
+    invalidHashError: "Invalid hash format. SHA-256 hash should be 64 hexadecimal characters.",
+    calculatingHash: "Calculating hash...",
+    hashMatch: "✓ File hash matches!",
+    hashMismatch: "✗ Hash mismatch!",
+    fileError: "Error verifying file:"
+  },
+  jp: {
+    title: "ハッシュデモ",
+    subtitle: "MD5・SHA-1・SHA-256 とファイル検証",
+    textLabel: "ハッシュ化するテキスト:",
+    textPlaceholder: "テキストを入力してください...",
+    fileLabel: "整合性チェック用ファイル (SHA-256):",
+    expectedHashPlaceholder: "期待されるSHA-256ハッシュ",
+    verifyButton: "ファイル検証",
+    footer: "TTB3AR制作",
+    emptyTextError: "ハッシュ化するテキストを入力してください。",
+    selectFileError: "ファイルを選択してください。",
+    enterHashError: "期待されるハッシュを入力してください。",
+    invalidHashError: "無効なハッシュ形式です。SHA-256ハッシュは64文字の16進数である必要があります。",
+    calculatingHash: "ハッシュを計算中...",
+    hashMatch: "✓ ファイルハッシュが一致しました！",
+    hashMismatch: "✗ ハッシュが一致しません！",
+    fileError: "ファイル検証エラー:"
+  }
+};
+
+// Local Storage Functions
+function saveTheme(theme) {
+  try {
+    localStorage.setItem('hashingDemo_theme', theme);
+  } catch (error) {
+    console.warn('Could not save theme preference:', error);
+  }
 }
 
-/**
- * Toggle between English and Japanese languages
- */
+function loadTheme() {
+  try {
+    return localStorage.getItem('hashingDemo_theme') || 'light';
+  } catch (error) {
+    console.warn('Could not load theme preference:', error);
+    return 'light';
+  }
+}
+
+function saveLanguage(language) {
+  try {
+    localStorage.setItem('hashingDemo_language', language);
+  } catch (error) {
+    console.warn('Could not save language preference:', error);
+  }
+}
+
+function loadLanguage() {
+  try {
+    return localStorage.getItem('hashingDemo_language') || 'en';
+  } catch (error) {
+    console.warn('Could not load language preference:', error);
+    return 'en';
+  }
+}
+
+// Theme handling
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  saveTheme(theme);
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  setTheme(newTheme);
+}
+
+function initializeTheme() {
+  const savedTheme = loadTheme();
+  setTheme(savedTheme);
+  
+  // Update the toggle switch to match the saved theme
+  themeToggle.checked = (savedTheme === 'dark');
+}
+
+// Language handling
+function setLanguage(language) {
+  document.documentElement.setAttribute('data-language', language);
+  isJapanese = (language === 'jp');
+  updateUILanguage(language);
+  saveLanguage(language);
+}
+
 function toggleLanguage() {
-  isJapanese = !isJapanese;
-  const lang = isJapanese ? 'jp' : 'en';
+  const contentElements = document.querySelectorAll('#title, #subtitle, #text-label, #file-label, #verify-button, #footer-text');
   
-  document.getElementById('title').textContent = translations[lang].title;
-  document.getElementById('subtitle').textContent = translations[lang].subtitle;
+  contentElements.forEach(element => {
+    element.classList.add('transition-content');
+  });
   
-  // Update language attribute
-  document.documentElement.setAttribute('data-language', lang);
+  document.body.offsetHeight;
+  
+  contentElements.forEach(element => {
+    element.classList.add('fade-out');
+  });
+  
+  setTimeout(() => {
+    const newLanguage = isJapanese ? 'en' : 'jp';
+    setLanguage(newLanguage);
+    
+    langLabel.textContent = isJapanese ? "JP" : "EN";
+    
+    showLanguageIndicator(newLanguage);
+    
+    setTimeout(() => {
+      contentElements.forEach(element => {
+        element.classList.remove('fade-out');
+      });
+      
+      setTimeout(() => {
+        contentElements.forEach(element => {
+          element.classList.remove('transition-content');
+        });
+      }, 300);
+    }, 50);
+  }, 300);
+}
+
+function initializeLanguage() {
+  const savedLanguage = loadLanguage();
+  isJapanese = (savedLanguage === 'jp');
+  
+  // Update the toggle switch to match the saved language
+  langToggle.checked = isJapanese;
+  langLabel.textContent = isJapanese ? "JP" : "EN";
+  
+  setLanguage(savedLanguage);
+}
+
+function updateUILanguage(language) {
+  const texts = translations[language];
+  
+  document.getElementById('title').textContent = texts.title;
+  document.getElementById('subtitle').textContent = texts.subtitle;
+  document.getElementById('text-label').textContent = texts.textLabel;
+  document.getElementById('textInput').placeholder = texts.textPlaceholder;
+  document.getElementById('file-label').textContent = texts.fileLabel;
+  document.getElementById('expectedHash').placeholder = texts.expectedHashPlaceholder;
+  document.getElementById('verify-button').textContent = texts.verifyButton;
+  document.getElementById('footer-text').textContent = texts.footer;
+  document.title = texts.title;
+}
+
+function showLanguageIndicator(language) {
+  let indicator = document.querySelector('.language-indicator');
+  
+  if (!indicator) {
+    indicator = document.createElement('div');
+    indicator.className = 'language-indicator';
+    document.body.appendChild(indicator);
+  }
+  
+  indicator.textContent = language === 'en' ? 'English' : '日本語';
+  indicator.classList.add('show');
+  
+  setTimeout(() => {
+    indicator.classList.remove('show');
+  }, 1500);
 }
 
 /**
@@ -45,9 +192,10 @@ function toggleLanguage() {
 async function runHash(algorithm) {
   const input = document.getElementById("textInput").value;
   const resultElement = document.getElementById("hashResult");
+  const texts = translations[isJapanese ? 'jp' : 'en'];
   
   if (!input.trim()) {
-    resultElement.textContent = "Please enter some text to hash.";
+    resultElement.textContent = texts.emptyTextError;
     resultElement.style.color = "var(--danger)";
     return;
   }
@@ -84,6 +232,7 @@ async function verifyFile() {
   const fileInput = document.getElementById("fileInput").files[0];
   const expected = document.getElementById("expectedHash").value.trim().toLowerCase();
   const result = document.getElementById("fileResult");
+  const texts = translations[isJapanese ? 'jp' : 'en'];
 
   // Clear previous results
   result.textContent = "";
@@ -91,13 +240,13 @@ async function verifyFile() {
 
   // Validate inputs
   if (!fileInput) {
-    result.textContent = "Please select a file.";
+    result.textContent = texts.selectFileError;
     result.style.color = "var(--danger)";
     return;
   }
   
   if (!expected) {
-    result.textContent = "Please enter the expected hash.";
+    result.textContent = texts.enterHashError;
     result.style.color = "var(--danger)";
     return;
   }
@@ -105,14 +254,14 @@ async function verifyFile() {
   // Validate hash format (SHA-256 should be 64 hex characters)
   const hashRegex = /^[a-f0-9]{64}$/i;
   if (!hashRegex.test(expected)) {
-    result.textContent = "Invalid hash format. SHA-256 hash should be 64 hexadecimal characters.";
+    result.textContent = texts.invalidHashError;
     result.style.color = "var(--danger)";
     return;
   }
 
   try {
     // Show loading state
-    result.textContent = "Calculating hash...";
+    result.textContent = texts.calculatingHash;
     result.style.color = "inherit";
 
     // Calculate SHA-256 hash of the file
@@ -123,14 +272,14 @@ async function verifyFile() {
 
     // Compare hashes
     if (actualHash === expected) {
-      result.textContent = `✓ File hash matches!\nFile: ${fileInput.name}\nHash: ${actualHash}`;
+      result.textContent = `${texts.hashMatch}\nFile: ${fileInput.name}\nHash: ${actualHash}`;
       result.style.color = "var(--success)";
     } else {
-      result.textContent = `✗ Hash mismatch!\nFile: ${fileInput.name}\nExpected: ${expected}\nActual: ${actualHash}`;
+      result.textContent = `${texts.hashMismatch}\nFile: ${fileInput.name}\nExpected: ${expected}\nActual: ${actualHash}`;
       result.style.color = "var(--danger)";
     }
   } catch (error) {
-    result.textContent = `Error verifying file: ${error.message}`;
+    result.textContent = `${texts.fileError} ${error.message}`;
     result.style.color = "var(--danger)";
   }
 }
@@ -139,10 +288,13 @@ async function verifyFile() {
  * Initialize the application
  */
 function init() {
-  // Set initial theme icon
-  const themeIcon = document.querySelector('.theme-switch i');
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  themeIcon.className = currentTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+  // Initialize saved preferences first
+  initializeTheme();
+  initializeLanguage();
+  
+  // Then set up event listeners
+  themeToggle.addEventListener("change", toggleTheme);
+  langToggle.addEventListener("change", toggleLanguage);
   
   // Add keyboard event listeners
   document.getElementById('textInput').addEventListener('keypress', function(e) {

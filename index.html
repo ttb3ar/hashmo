@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light" data-language="en">
 <head>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hashing Demo</title>
@@ -8,19 +9,36 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <button class="theme-switch" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-  <button class="lang-switch" onclick="toggleLanguage()"><i class="fas fa-language"></i></button>
+  <div class="language-switch-wrapper">
+    <label class="language-switch" for="language-checkbox">
+      <input type="checkbox" id="language-checkbox" />
+      <div class="slider lang-slider round">
+        <span class="lang-label">JP</span>
+        <span class="lang-label">EN</span>
+      </div>
+    </label>
+  </div>
+  <div class="theme-switch-wrapper">
+    <label class="theme-switch" for="checkbox">
+      <input type="checkbox" id="checkbox" />
+      <div class="slider theme-slider round">
+        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun"></i>
+      </div>
+    </label>
+  </div>
 
   <div class="container">
     <header>
       <h1 id="title">Hashing Demo</h1>
       <p id="subtitle">Explore MD5, SHA-1, and SHA-256 + file verification</p>
     </header>
+    
     <main class="form-class">
       <div class="input-group">
-        <label for="textInput">Text to Hash:</label>
+        <label for="textInput" id="text-label">Text to Hash:</label>
         <input type="text" id="textInput" placeholder="Enter text here..." />
-        <div>
+        <div class="button-group">
           <button onclick="runHash('MD5')">MD5</button>
           <button onclick="runHash('SHA-1')">SHA-1</button>
           <button onclick="runHash('SHA-256')">SHA-256</button>
@@ -32,10 +50,10 @@
       <hr />
 
       <div class="input-group">
-        <label for="fileInput">File for Integrity Check (SHA-256):</label>
+        <label for="fileInput" id="file-label">File for Integrity Check (SHA-256):</label>
         <input type="file" id="fileInput" />
         <input type="text" id="expectedHash" placeholder="Expected SHA-256 hash" />
-        <button onclick="verifyFile()">Verify File</button>
+        <button onclick="verifyFile()" id="verify-button">Verify File</button>
       </div>
 
       <div class="output" id="fileResult"></div>
@@ -44,8 +62,12 @@
 
   <footer class="footer">
     <div class="social-links">
-      <a href="https://github.com/ttb3ar"><i class="fab fa-github"></i></a>
-      <a href="https://linkedin.com/in/your-profile"><i class="fab fa-linkedin"></i></a>
+      <a href="https://github.com/ttb3ar" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/theodore-lin-7b391a299" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-linkedin"></i>
+      </a>
     </div>
     <p id="footer-text">Created by TTB3AR</p>
   </footer>
