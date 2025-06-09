@@ -456,7 +456,7 @@ input:checked + .theme-slider {
     transform: translateX(24px);
   }
 
-    .home-button-wrapper {
+  .home-button-wrapper {
     top: 15px;
     left: 15px;
   }
@@ -516,7 +516,7 @@ input:checked + .theme-slider {
     margin: 0.25rem 0;
   }
 
-    .home-button-wrapper {
+  .home-button-wrapper {
     top: 10px;
     left: 10px;
   }
@@ -537,7 +537,7 @@ input:checked + .theme-slider {
     right: 15px;
   }
 
-    .home-button-wrapper {
+  .home-button-wrapper {
     position: absolute;
   }
 }
