@@ -399,6 +399,29 @@ input:checked + .theme-slider {
   outline-offset: 2px;
 }
 
+/* Theme-specific styling */
+[data-theme="light"] .home-button {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+[data-theme="light"] .home-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+[data-theme="dark"] .home-button {
+  background-color: var(--secondary-color);
+  color: var(--background-color-dark);
+  border: 1px solid var(--border-color-dark);
+}
+
+[data-theme="dark"] .home-button:hover {
+  background-color: var(--primary-color);
+  color: var(--background-color-dark);
+  border: 1px solid var(--primary-color);
+}
+
 /* Media queries for responsive design */
 @media screen and (max-width: 767px) and (min-width: 481px) {
   .theme-switch-wrapper, .language-switch-wrapper {
